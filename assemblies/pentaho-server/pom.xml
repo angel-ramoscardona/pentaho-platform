@@ -47,7 +47,6 @@
     <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
-      <version>${commons-logging.version}</version>
     </dependency>
     <dependency>
       <groupId>org.hsqldb</groupId>
@@ -116,7 +115,6 @@
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>apache-log4j-extras</artifactId>
-      <version>${apache-log4j-extras}</version>
     </dependency>
     <dependency>
       <groupId>net.snowflake</groupId>
