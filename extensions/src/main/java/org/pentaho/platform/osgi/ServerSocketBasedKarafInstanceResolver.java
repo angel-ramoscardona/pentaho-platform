@@ -155,12 +155,12 @@ class ServerSocketBasedKarafInstanceResolver implements IKarafInstanceResolver {
         newCacheFolder.mkdir();
         // create lock file and lock it for this process
 
-        File lockFile = new File( newCacheFolder, ".lock" );
-        fileOutputStream = new FileOutputStream( lockFile );
-        FileLock lock = fileOutputStream.getChannel().lock();
+        //File lockFile = new File( newCacheFolder, ".lock" );
+        //fileOutputStream = new FileOutputStream( lockFile );
+        //FileLock lock = fileOutputStream.getChannel().lock();
         instance.setCachePath( newCacheFolder.getPath() );
-        instance.setCacheLock( lock );
-      } catch ( IOException e ) {
+        //instance.setCacheLock( lock );
+      } catch ( Exception e ) {
         logger.error( "Error creating data cache folder", e );
       }
     }
