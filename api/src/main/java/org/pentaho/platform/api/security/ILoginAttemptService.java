@@ -14,14 +14,15 @@
  * See the GNU Lesser General Public License for more details.
  *
  *
- * Copyright (c) 2002-2020 Hitachi Vantara. All rights reserved.
+ * Copyright (c) 2020 Hitachi Vantara. All rights reserved.
  *
  */
 
-package org.pentaho.platform.api.repository2.unified;
+package org.pentaho.platform.api.security;
 
-public interface IStreamListener {
-  void fileCreated( String filePath );
+public interface ILoginAttemptService {
 
-  default void streamComplete() { }
+  void loginSucceeded( String key );
+  void loginFailed( String key );
+  boolean isBlocked( String key );
 }

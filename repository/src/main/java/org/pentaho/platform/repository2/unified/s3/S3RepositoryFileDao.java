@@ -54,7 +54,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -120,6 +119,32 @@ public class S3RepositoryFileDao implements IRepositoryFileDao {
     return out.toByteArray();
   }
 
+//  public RepositoryFile createFile( Serializable parentFolderId, RepositoryFile file, IRepositoryFileData data,
+//      RepositoryFileAcl acl, String versionMessage ) {
+//    String fileNameWithPath = RepositoryFilenameUtils.concat( parentFolderId.toString(), file.getName() );
+//    FileOutputStream fos = null;
+//    File f = new File( fileNameWithPath );
+//
+//    try {
+//      f.createNewFile();
+//      fos = new FileOutputStream( f );
+//      if ( data instanceof SimpleRepositoryFileData ) {
+//        fos.write( inputStreamToBytes( ( (SimpleRepositoryFileData) data ).getInputStream() ) );
+//      } else if ( data instanceof NodeRepositoryFileData ) {
+//        fos.write( inputStreamToBytes( new ByteArrayInputStream( ( (NodeRepositoryFileData) data ).getNode().toString()
+//            .getBytes() ) ) );
+//      }
+//    } catch ( FileNotFoundException e ) {
+//      throw new UnifiedRepositoryException( "Error writing file [" + fileNameWithPath + "]", e );
+//    } catch ( IOException e ) {
+//      throw new UnifiedRepositoryException( "Error writing file [" + fileNameWithPath + "]", e );
+//    } finally {
+//      IOUtils.closeQuietly( fos );
+//    }
+//
+//    return internalGetFile( f );
+//  }
+
   public RepositoryFile createFile( Serializable parentFolderId, RepositoryFile file, IRepositoryFileData data,
                                     RepositoryFileAcl acl, String versionMessage ) {
     String fileNameWithPath = RepositoryFilenameUtils.concat( parentFolderId.toString(), file.getName() );
@@ -154,6 +179,14 @@ public class S3RepositoryFileDao implements IRepositoryFileDao {
     }
     final RepositoryFile repositoryFolder = internalGetFile( newFolder );
     return repositoryFolder;
+    //      String folderNameWithPath = parentFolderId + "/" + file.getName();
+//      File newFolder = new File( folderNameWithPath );
+//      newFolder.mkdir();
+//      final RepositoryFile repositoryFolder = internalGetFile( newFolder );
+//      return repositoryFolder;
+//    } catch ( Throwable th ) {
+//      throw new UnifiedRepositoryException();
+//    }
   }
 
   public void deleteFile( Serializable fileId, String versionMessage ) {
@@ -240,12 +273,15 @@ public class S3RepositoryFileDao implements IRepositoryFileDao {
 
     try {
       String name = f.getName().getBaseName().equals( "rinehart_hackathon" ) ? "/" : f.getName().getBaseName();
-      String path = f.getURL().getPath();//.replace( "///ackbar-development/rinehart_hackathon/", "/" );
+      String path = f.getURL().getPath();
+      if ( name.equals( "/" ) ) {
+        path = f.getURL().getPath().replace("///ackbar-development/rinehart_hackathon", "/");
+      }
       file =
         new RepositoryFile.Builder( f.getURL().toString(), name )
           .folder( f.getType().equals( FileType.FOLDER ) || f.getType().equals( FileType.IMAGINARY ) ).versioned( false ).path(
           path ).versionId( f.getName().getBaseName() ).locked( false ).lockDate( null ).lockMessage( null )
-          .lockOwner( null ).title( name ).description( name ).locale( null ).fileSize( 1 ).lastModificationDate( new Date() )
+          .lockOwner( null ).title( name ).description( name ).locale( null ).fileSize( 1 )
           .build();
     } catch ( FileSystemException e ) {
       throw new UnifiedRepositoryException( e );
@@ -620,6 +656,10 @@ public class S3RepositoryFileDao implements IRepositoryFileDao {
       physicalFileLocation = rootDirString + relPath.substring( 40 );
     } else if ( relPath.equals( "/AMQPProducer2" ) ) {
       physicalFileLocation = rootDirString + "/home/admin/AMQPProducer2.ktr";
+    } else if (relPath.startsWith("///")) {
+      physicalFileLocation = RepositoryFilenameUtils.concat( rootDirString, relPath.substring( RepositoryFilenameUtils.getPrefixLength( relPath.substring(2) ) ) );
+    } else if (relPath.startsWith("//")) {
+      physicalFileLocation = RepositoryFilenameUtils.concat( rootDirString, relPath.substring( RepositoryFilenameUtils.getPrefixLength( relPath.substring(1) ) ) );
     } else {
       physicalFileLocation = RepositoryFilenameUtils.concat( rootDirString, relPath.substring( RepositoryFilenameUtils.getPrefixLength( relPath ) ) );
     }
