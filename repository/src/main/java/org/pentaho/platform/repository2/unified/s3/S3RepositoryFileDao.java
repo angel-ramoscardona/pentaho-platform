@@ -51,13 +51,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 @SuppressWarnings( "nls" )
 public class S3RepositoryFileDao implements IRepositoryFileDao {
@@ -439,11 +433,11 @@ public class S3RepositoryFileDao implements IRepositoryFileDao {
   }
 
   public VersionSummary getVersionSummary( Serializable fileId, Serializable versionId ) {
-    throw new UnsupportedOperationException( "This operation is not support by this repository" );
+    //throw new UnsupportedOperationException( "This operation is not support by this repository" );
 //    RepositoryFile file = getFile( fileId, versionId );
-//    List<String> labels = new ArrayList<String>();
-//    return new VersionSummary( fileId, ( versionId != null ? versionId : fileId ),
-//        false, file.getCreatedDate(), file.getCreatorId(), StringUtils.EMPTY,  labels );
+    List<String> labels = new ArrayList<String>();
+    return new VersionSummary( fileId, ( versionId != null ? versionId : fileId ),
+        false, new Date(), "Author", StringUtils.EMPTY,  labels );
   }
 
   public void lockFile( Serializable fileId, String message ) {
